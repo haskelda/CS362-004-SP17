@@ -136,5 +136,11 @@ int playVillage(struct gameState *state, int handPos);
 int playFeast(struct gameState *state, int choice1);
 int playCouncil_Room(struct gameState *state, int handPos);
 
+// Refactoring for asssignment-2
+int cardEffect_Adventurer(struct gameState *state);
+int cardEffect_Smithy(struct gameState *state, int handPos);
+int cardEffect_SeaHag(struct gameState *state);
+int cardEffect_Village(struct gameState *state, int handPos);
+int cardEffect_Tribute(struct gameState *state);
 
 #endif
