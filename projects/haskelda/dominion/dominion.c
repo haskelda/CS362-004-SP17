@@ -1353,14 +1353,14 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 int cardEffect_Adventurer(struct gameState *state)
 {
-  printf("cardEffect_Adventurer has been called\n"); // tracer
+  //printf("cardEffect_Adventurer has been called\n"); // tracer
   int currentPlayer = whoseTurn(state);
   int temphand[MAX_HAND];
   int drawntreasure=0;
   int cardDrawn;
   int z = 0;// this is the counter for the temp hand
   while(drawntreasure<2){
-  if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+  if (state->deckCount[currentPlayer] <2){//if the deck is empty we need to shuffle discard and add to deck
     shuffle(currentPlayer, state);
   }
   drawCard(currentPlayer, state);
@@ -1382,13 +1382,13 @@ int cardEffect_Adventurer(struct gameState *state)
 
 int cardEffect_Smithy(struct gameState *state, int handPos)
 {
-  printf("cardEffect_Smithy has been called\n"); // tracer
+  //printf("cardEffect_Smithy has been called\n"); // tracer
   int i;
   int currentPlayer = whoseTurn(state);
   //+3 Cards
       for (i = 0; i < 3; i++)
   {
-    drawCard(currentPlayer, state);
+    drawCard(currentPlayer + i, state);
   }
       
       //discard card from hand
@@ -1407,7 +1407,7 @@ int cardEffect_SeaHag(struct gameState *state)
       state->discard[i][state->discardCount[i]] = state->deck[i][state->deckCount[i]--];
       state->deckCount[i]--;
       state->discardCount[i]++;
-      state->deck[i][state->deckCount[i]--] = curse;//Top card now a curse
+      state->deck[i][state->deckCount[i]--] = sea_hag;//Top card now a sea_hag
     }
   }
   return 0;
@@ -1424,7 +1424,7 @@ int cardEffect_Village(struct gameState *state, int handPos)
       state->numActions = state->numActions + 2;
       
       //discard played card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      discardCard(handPos, currentPlayer, state, 1);
       return 0;
 }
 
@@ -1471,12 +1471,6 @@ int cardEffect_Tribute(struct gameState *state)
   state->deckCount[nextPlayer]--;
       }    
            
-      if (tributeRevealedCards[0] == tributeRevealedCards[1]){//If we have a duplicate card, just drop one 
-  state->playedCards[state->playedCardCount] = tributeRevealedCards[1];
-  state->playedCardCount++;
-  tributeRevealedCards[1] = -1;
-      }
-
       for (i = 0; i <= 2; i ++){
   if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver || tributeRevealedCards[i] == gold){//Treasure cards
     state->coins += 2;
