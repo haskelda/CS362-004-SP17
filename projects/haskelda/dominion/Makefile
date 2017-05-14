@@ -24,6 +24,9 @@ testDrawCard: testDrawCard.c dominion.o rngs.o
 badTestDrawCard: badTestDrawCard.c dominion.o rngs.o
 	gcc -o badTestDrawCard -g  badTestDrawCard.c dominion.o rngs.o $(CFLAGS)
 
+betterTestDrawCard: betterTestDrawCard.c dominion.o rngs.o
+	gcc -o betterTestDrawCard -g  betterTestDrawCard.c dominion.o rngs.o $(CFLAGS)
+
 testBuyCard: testDrawCard.c dominion.o rngs.o
 	gcc -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
@@ -99,6 +102,36 @@ unittestresults.out: unittest1.c unittest2.c dominion.o rngs.o
 	cardtest4 >> unittestresults.out
 	gcov -b -f dominion.o >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
+
+
+# testing for Assignment-4
+
+randomtestcard1.out: randomtestcard1.c dominion.o rngs.o 
+	echo "Results from running randomtestcard1:" > randomtestcard1.out
+
+	echo "---------------------------- randomtestcard1.c ------------------------------------------" >> randomtestcard1.out
+	gcc -o randomtestcard1 randomtestcard1.c dominion.o rngs.o $(CFLAGS)
+	randomtestcard1 >> randomtestcard1.out
+	gcov -b -f dominion.c >> randomtestcard1.out
+	cat dominion.c.gcov >> randomtestcard1.out
+
+randomtestcard2.out: randomtestcard2.c dominion.o rngs.o 
+	echo "Results from running randomtestcard2:" > randomtestcard2.out
+
+	echo "---------------------------- randomtestcard2.c ------------------------------------------" >> randomtestcard2.out
+	gcc -o randomtestcard2 randomtestcard2.c dominion.o rngs.o $(CFLAGS)
+	randomtestcard2 >> randomtestcard2.out
+	gcov -b -f dominion.c >> randomtestcard2.out
+	cat dominion.c.gcov >> randomtestcard2.out
+
+randomtestadventurer.out: randomtestadventurer.c dominion.o rngs.o 
+	echo "Results from running randomtestadventurer:" > randomtestadventurer.out
+
+	echo "---------------------------- randomtestadventurer.c ------------------------------------------" >> randomtestadventurer.out
+	gcc -o randomtestadventurer randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+	randomtestadventurer >> randomtestadventurer.out
+	gcov -b -f dominion.c >> randomtestadventurer.out
+	cat dominion.c.gcov >> randomtestadventurer.out
 
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard

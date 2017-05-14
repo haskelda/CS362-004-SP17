@@ -1382,17 +1382,22 @@ int cardEffect_Adventurer(struct gameState *state)
 
 int cardEffect_Smithy(struct gameState *state, int handPos)
 {
-  //printf("cardEffect_Smithy has been called\n"); // tracer
+ // printf("cardEffect_Smithy has been called\n"); // tracer
   int i;
   int currentPlayer = whoseTurn(state);
+ // printf("currentPlayer is: %d\n", currentPlayer);
   //+3 Cards
       for (i = 0; i < 3; i++)
   {
+   // printf("before drawCard\n");
     drawCard(currentPlayer + i, state);
+   // printf("after drawCard\n");
   }
       
       //discard card from hand
+   // printf("before discard\n");
       discardCard(handPos, currentPlayer, state, 0);
+      //printf("after discard\n");
   return 0;
 }
 

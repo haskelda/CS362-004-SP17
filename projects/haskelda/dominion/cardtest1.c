@@ -17,6 +17,8 @@
   return 0;
 }
 
+ card text: "+3 Cards"
+
  *
  * -----------------------------------------------------------------------
  */
@@ -99,7 +101,7 @@ int main() {
 	cardEffect_Smithy(&G, G.handCount[thisPlayer] - 1); //play smithy
 
 	#if (TRACERS == 1)
-	printf("player cards after plating smithy:\ndeck:\t");
+	printf("player cards after playing smithy:\ndeck:\t");
 	for (i = 0; i < G.deckCount[thisPlayer]; ++i)
 	{
 		printf("%d\t", G.deck[thisPlayer][i]);
