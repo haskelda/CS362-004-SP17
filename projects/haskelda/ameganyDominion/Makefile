@@ -50,7 +50,7 @@ testAll: dominion.o testSuite.c
 
 # testing for Assignment-3
 
-unittestresults.out: unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c cardtest2.c cardtest3.c cardtest4.c dominion.o rngs.o
+unittestresults.out: unittest1.c unittest2.c dominion.o rngs.o
 	echo "Results from running function tests:" > unittestresults.out
 
 	echo "---------------------------- unittest1.c ------------------------------------------" >> unittestresults.out
@@ -79,24 +79,28 @@ unittestresults.out: unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c
 	gcov -b -f dominion.o >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
+cardtest1.out: cardtest1.c dominion.o rngs.o
 	echo "---------------------------- cardtest1.c ------------------------------------------" >> unittestresults.out
 	gcc -o cardtest1 cardtest1.c dominion.o rngs.o $(CFLAGS)
 	cardtest1 >> unittestresults.out
 	gcov -b -f dominion.o >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
+cardtest2.out: cardtest2.c dominion.o rngs.o
 	echo "---------------------------- cardtest2.c ------------------------------------------" >> unittestresults.out
 	gcc -o cardtest2 cardtest2.c dominion.o rngs.o $(CFLAGS)
 	cardtest2 >> unittestresults.out
 	gcov -b -f dominion.o >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
+cardtest3.out: cardtest3.c dominion.o rngs.o
 	echo "---------------------------- cardtest3.c ------------------------------------------" >> unittestresults.out
 	gcc -o cardtest3 cardtest3.c dominion.o rngs.o $(CFLAGS)
 	cardtest3 >> unittestresults.out
 	gcov -b -f dominion.o >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
+cardtest4.out: cardtest4.c dominion.o rngs.o
 	echo "---------------------------- cardtest4.c ------------------------------------------" >> unittestresults.out
 	gcc -o cardtest4 cardtest4.c dominion.o rngs.o $(CFLAGS)
 	cardtest4 >> unittestresults.out
@@ -132,23 +136,6 @@ randomtestadventurer.out: randomtestadventurer.c dominion.o rngs.o
 	randomtestadventurer >> randomtestadventurer.out
 	gcov -b -f dominion.c >> randomtestadventurer.out
 	cat dominion.c.gcov >> randomtestadventurer.out
-
-
-# testing for assignment-5
-
-cardtest2_v2.out: cardtest2_v2.c dominion.o rngs.o
-	echo "---------------------------- cardtest2_v2.c ------------------------------------------" > cardtest2_v2.out
-	gcc -o cardtest2_v2 cardtest2_v2.c dominion.o rngs.o $(CFLAGS)
-	cardtest2_v2 >> cardtest2_v2.out
-	gcov -b -f dominion.o >> cardtest2_v2.out
-	cat dominion.c.gcov >> cardtest2_v2.out
-
-randomtestadventurer_v2.out: randomtestadventurer_v2.c dominion.o rngs.o 
-	echo "---------------------------- randomtestadventurer.c ------------------------------------------" > randomtestadventurer_v2.out
-	gcc -o randomtestadventurer_v2 randomtestadventurer_v2.c dominion.o rngs.o $(CFLAGS)
-	randomtestadventurer_v2 >> randomtestadventurer_v2.out
-	gcov -b -f dominion.c >> randomtestadventurer_v2.out
-	cat dominion.c.gcov >> randomtestadventurer_v2.out
 
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard

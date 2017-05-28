@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------
- * cardtest2.c
- * testing adventurer
+ * cardtest2_v2.c
+ * testing cardEffect_Adventurer()
 
 int cardEffect_Adventurer(struct gameState *state)
 {
@@ -47,7 +47,7 @@ int cardEffect_Adventurer(struct gameState *state)
 
 
 #define VERBOSE_TEST 1	// set to 0 to remove printfs of expected results from output
-#define TRACERS 1 // for tracing/testing this code
+#define TRACERS 1 // for displaying the player's cards
 
 int testFlag = 1; // 1 = all tests passed thus far, 0 = at least one test failed.  For final printf statement
 
@@ -77,13 +77,15 @@ int main() {
 	struct gameState G, testG;
 	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
 			sea_hag, tribute, smithy, council_room}; // these do not matter for this test
-	printf("This is cardtest2.c: testing cardEffect_Adventurer:\n");
+	printf("This is cardtest2_v2.c: testing cardEffect_Adventurer():\n");
 
 	/* 
-	tests for cardEffect_Adventurer will be:
+	tests for cardAdventurer() will be:
 	1) player's deckCount decreases by at least 2
-	2) player's handCount increases by exactly 1 (gain 2 treasures, discard adventurer)
-	3) player's discard pile increases by 2 less than amount that the deck decreases
+	2) player's handCount increases by exactly 1 (gain 2 treasures, play adventurer)
+	3) playedCardCount increases by 1
+	4) adventurer is the top card in the playedCards pile
+	5) player's discard pile increases by 2 less than amount that the deck decreases
 	*/
 
 	int i; // iterator
@@ -91,6 +93,7 @@ int main() {
 	initializeGame(numPlayers, k, seed, &G);
 	G.hand[thisPlayer][G.handCount[thisPlayer]] = adventurer; // adding adventurer to hand
 	G.handCount[thisPlayer]++;
+	G.playedCardCount = 0;
 	memcpy(&testG, &G, sizeof(struct gameState)); // copy the game state to a test case
 
 	#if (TRACERS == 1)
@@ -105,6 +108,11 @@ int main() {
 	{
 		printf("%d\t", G.hand[thisPlayer][i]);
 	}
+	printf("\nplayedCards:\t");
+	for (i = 0; i < G.playedCardCount; ++i)
+	{
+		printf("%d\t", G.playedCards[i]);
+	}
 	printf("\ndiscard:\t");
 	for (i = 0; i < G.discardCount[thisPlayer]; ++i)
 	{
@@ -113,10 +121,11 @@ int main() {
 	printf("\n");
 	#endif
 
-	cardEffect_Adventurer(&G); //play adventurer
+
+	cardEffect_Adventurer(&G, G.handCount[thisPlayer] - 1); //play adventurer
 
 	#if (TRACERS == 1)
-	printf("player cards after playing adventurer:\ndeck:\t");
+	printf("Player cards after playing adventurer:\ndeck:\t");
 	for (i = 0; i < G.deckCount[thisPlayer]; ++i)
 	{
 		printf("%d\t", G.deck[thisPlayer][i]);
@@ -125,6 +134,11 @@ int main() {
 	for (i = 0; i < G.handCount[thisPlayer]; ++i)
 	{
 		printf("%d\t", G.hand[thisPlayer][i]);
+	}
+	printf("\nplayedCards:\t");
+	for (i = 0; i < G.playedCardCount; ++i)
+	{
+		printf("%d\t", G.playedCards[i]);
 	}
 	printf("\ndiscard:\t");
 	for (i = 0; i < G.discardCount[thisPlayer]; ++i)
@@ -135,14 +149,20 @@ int main() {
 	#endif	
 	
 	// 1) player's deckCount decreases by at least 2 after playing adventurer
-	asserttrue(testG.deckCount[thisPlayer] >= G.deckCount[thisPlayer] + 2, "player's deckCount decreases by at least 2 after playing adventurer");
+	asserttrue(testG.deckCount[thisPlayer] >= G.deckCount[thisPlayer] + 2, "player's deckCount decreases by at least 2");
 	
 	// 2) player's handCount increases by 1 after playing adventurer
-	asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer] - 1, "player's handCount increases by 1 after playing adventurer");
+	asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer] - 1, "player's handCount increases by exactly 1");
 
-	// 3) player's discard pile increases by 2 less than amount that the deck decreases
-	int deckCountDecrease = testG.deckCount[thisPlayer] - G.deckCount[thisPlayer] - 2;
-	asserttrue(testG.discardCount[thisPlayer] == G.discardCount[thisPlayer] - deckCountDecrease, "player's discard pile increases by 2 less than amount that the deck decreases");
+	// 3) player's playedCardCount increases by 1
+	asserttrue(testG.playedCardCount == G.playedCardCount - 1, "player's playedCardCount increases by exactly 1");
+
+	// 4) adventurer is the top card in the playedCards pile
+	asserttrue(G.playedCards[G.playedCardCount - 1] == adventurer, "adventurer is the top card in the playedCards pile");
+
+	// 5) player's discard pile increases by 2 less than amount that the deck decreases
+	int deckCountDecrease = testG.deckCount[thisPlayer] - G.deckCount[thisPlayer];
+	asserttrue(testG.discardCount[thisPlayer] == G.discardCount[thisPlayer] - (deckCountDecrease - 2), "player's discard pile increases by 2 less than amount that the deck decreases");
 
 	/*
 	Other tests to consider:
@@ -150,16 +170,15 @@ int main() {
 	other players card counts do not change
 	the same other cards remain in the player's hand
 	adventurer is removed from the player's hand
-	adventurer is added to discard
 	the same cards that were removed from the deck ended up in the discard (except for the treasures)
 	*/
 
 
 	if (testFlag == 1)
 	{
-		printf("ALL TESTS PASSED\n");
+		printf("\nALL TESTS PASSED for cardtest2_v2.c: cardEffect_Adventurer()\n\n");
 	}else {
-		printf("TEST FAILURE for cardtest2.c: cardEffect_Adventurer\n\n");
+		printf("\nOVERALL TEST FAILURE for cardtest2_v2.c: cardEffect_Adventurer()\n\n");
 	}
 
     return 0;

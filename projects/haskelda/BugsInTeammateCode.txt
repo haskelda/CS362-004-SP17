@@ -1,0 +1,198 @@
+Title: cardSmithy function results in player drawing 4 cards instead of 3
+
+Class: Minor bug
+
+Date: 5/26/2017	        
+Reported By: David Haskell
+Email: haskelda@oregonstate.edu
+
+
+Product: dominion.c within dominion code used in CS 362-400, S17                  
+Version: dominion.c as refactored by Yannick Amegan (amegany)
+Platform: Linux CLI on flip.engr.oregonstate.edu                  
+Version:Linux version 3.10.0-327.36.3.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-4) (GCC) ) 
+       
+
+Is it reproducible: Yes, with available unit test.
+
+Description
+===========
+The text on the card Smithy is “+3 Cards”.  When the function cardSmithy is called, the result is that the player draws 4 cards instead of 3.
+
+Steps to Produce/Reproduce
+--------------------------
+The dominion code is not set up to be played by a user.  The only way to see this bug is through a unit test.  An example of this test (cardtest1.c) is available to download (see below).  The output of this test is shown below. The cards are represented by integers. The Smithy card is represented by the integer “13”.
+
+This is cardtest1.c: testing amegany cardSmithy():
+Initial player cards:
+deck:	1	1	4	4	4	
+hand:	4	4	1	4	4	13	
+playedCards:	
+player cards after playing smithy:
+deck:	1	
+hand:	4	4	1	4	4	1	4	4	4	
+playedCards:	13	
+TEST FAILED: player's deckCount decreases by 3 after playing smithy
+TEST FAILED: player's handCount increases by 2 after playing smithy
+TEST PASSED: player's playedCardCount increases by 1 after playing smithy
+TEST PASSED: smithy is the top card in the playedCards pile
+OVERALL TEST FAILURE for cardtest1.c: cardSmithy()
+
+
+
+Expected Results
+----------------
+The expected results, for the above test, would be for the player cards after playing smithy to be:
+deck:	1	1
+hand:	4	4	1	4	4	1	4	4
+playedCards:	13
+
+
+Actual Results
+--------------
+The actual results of the test are shown above.  There is an additional card moved from the deck to the hand.
+
+
+Workarounds
+-----------
+None known.
+
+
+Attachments/Downloads
+—————————————————————
+https://github.com/haskelda/CS362-004-SP17.git/projects/haskelda/ameganyDominion/cardtest1.c
+
+
+Other Information
+-----------------
+The function being tested is shown here in its entirety:
+
+int cardSmithy(struct gameState *state,  int currentPlayer, int handPos){
+	int i;
+	//+3 Cards
+	for (i = 0; i <= 3; i++){
+		drawCard(currentPlayer, state);
+	}
+	//discard card from hand
+	discardCard(handPos, currentPlayer, state, 0);
+	return 0;
+}
+
+It is evident that the third line should be “i < 3” rather than “i <= 3”
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Title: cardSeaHag function results in erratic game state
+
+Class: Minor bug
+
+Date: 5/26/2017	        
+Reported By: David Haskell
+Email: haskelda@oregonstate.edu
+
+
+Product: dominion.c within dominion code used in CS 362-400, S17                  
+Version: dominion.c as refactored by Yannick Amegan (amegany)
+Platform: Linux CLI on flip.engr.oregonstate.edu                  
+Version:Linux version 3.10.0-327.36.3.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-4) (GCC) ) 
+       
+
+Is it reproducible: Yes, with available unit test.
+
+Description
+===========
+The text on the card Sea Hag says, "Each other player discards the top card of his deck, then gains a Curse card, putting it on top of his deck."  After the function cardSeaHag is called, each player loses three cards from their deck, rather than one, and the Curse card is placed on their discard pile instead of their deck.
+
+
+Steps to Produce/Reproduce
+--------------------------
+The dominion code is not set up to be played by a user.  The only way to see this bug is through a unit test.  An example of this test (cardtest3.c) is available to download (see below).  The output of this test is shown below. The cards are represented by integers. The Curse card is represented by the integer “0”. In this unit test, there are three players: 0,1,2.  
+
+
+This is cardtest3.c: testing amegany cardSeaHag():
+whoseTurn: 0
+Initial player 1 cards:
+deck:	4	4	1	4	4	4	4	1	1	4	11	
+hand:	
+discard:	
+Initial player 2 cards:
+deck:	1	1	4	4	4	4	4	4	4	1	14	
+hand:	
+discard:	
+Player 1 cards after sea_hag:
+deck:	4	4	1	4	4	4	4	1	
+hand:	
+discard:	0	
+Player 2 cards after sea_hag:
+deck:	1	1	4	4	4	4	4	4	
+hand:	
+discard:	0	
+TEST FAILED: player 1 top deck card was moved to top of discard
+TEST FAILED: player 2 top deck card was moved to top of discard
+TEST FAILED: player 1 top deck card is a curse
+TEST FAILED: player 2 top deck card is a curse
+OVERALL TEST FAILURE for cardtest3.c: amegany cardSeaHag()
+
+
+
+Expected Results
+----------------
+The expected results, for the above test, would be as follows:
+
+Player 1 cards after sea_hag:
+deck:	4	4	1	4	4	4	4	1	1	4
+hand:	
+discard:	11	
+Player 2 cards after sea_hag:
+deck:	1	1	4	4	4	4	4	4	4	1
+hand:	
+discard:	14
+
+
+Actual Results
+--------------
+The actual results of the test are shown above. There are three cards removed from each players’ hand and a curse (0) is in the discard pile rather than the 11 and 14 card for players 1 and 2, respectively. 
+
+
+Workarounds
+-----------
+None known
+
+
+Attachments/Downloads
+—————————————————————
+https://github.com/haskelda/CS362-004-SP17.git/projects/haskelda/ameganyDominion/cardtest3.c
+
+
+Other Information
+-----------------
+The function being tested is shown here in its entirety:
+
+int cardSeaHag(struct gameState *state,  int currentPlayer){
+	int i;
+	for (i = 0; i < state->numPlayers; i++){
+		if (i != currentPlayer){
+			state->discard[i][state->discardCount[i]] = state->deck[i][state->deckCount[i]--];			    
+			state->deckCount[i]--;
+			state->discardCount[i]++;
+			state->deck[i][state->deckCount[i]--] = curse;//Top card now a curse
+		}
+	}
+	return 0;
+}
+
+The bugs in this code may be beyond immediate evaluation.
